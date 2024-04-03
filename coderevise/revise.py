@@ -3,6 +3,7 @@ import argparse
 import pickle
 import os
 import json
+import appdirs
 
 class Question:
     def __init__(self, name, priority, leetcode_number=None, codepro_number=None):
@@ -19,8 +20,20 @@ class Question:
                 f"LeetCode#: {self.leetcode_number}, CodePro#: {self.codepro_number}")
 
 class QuestionManager:
-    def __init__(self, filepath):
-        self.filepath = filepath
+    def __init__(self, filepath=None):
+        appname = "CodeRevise"
+        appauthor = "MyCompany"  # Change as appropriate for your app/company
+        default_db_path = os.path.join(appdirs.user_data_dir(appname, appauthor), 'questions.db')
+        
+        # Use an environment variable to specify the DB path. Fallback to path provided by appdirs.
+        self.filepath = os.getenv('CODE_REVISE_DB_PATH', default_db_path)
+
+        if filepath:
+            self.filepath = filepath
+
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(self.filepath), exist_ok=True)
+        
         self.heap = self.load_questions()
 
     def push(self, question):
@@ -134,7 +147,7 @@ def main():
 
     args = parser.parse_args()
 
-    question_manager = QuestionManager(filepath="questions.db")
+    question_manager = QuestionManager()
 
     if args.command == 'add':
         question = Question(args.name, args.priority, args.leetcode, args.codepro)

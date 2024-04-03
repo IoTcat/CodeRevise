@@ -1,5 +1,7 @@
 # CodeRevise
 
+[![pytest](https://github.com/IoTcat/CodeRevise/actions/workflows/pytest.yml/badge.svg)](https://github.com/IoTcat/CodeRevise/actions/workflows/pytest.yml)
+
 CodeRevise is a command-line interface (CLI) tool designed to help programmers manage their coding practice questions, focusing on revising and prioritizing questions from LeetCode and other coding platforms.
 
 ## Features

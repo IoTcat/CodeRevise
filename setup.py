@@ -10,6 +10,9 @@ setup(
             'coderevise=coderevise.revise:main',
         ],
     },
+    install_requires=[
+        'appdirs',  # Add other dependencies as needed
+    ],
     python_requires='>=3.6',
     description='A CLI tool for managing and revising coding practice questions.',
     long_description=open('README.md').read(),
