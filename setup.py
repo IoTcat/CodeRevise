@@ -12,6 +12,7 @@ setup(
     },
     install_requires=[
         'appdirs',  # Add other dependencies as needed
+        'tabulate',
     ],
     python_requires='>=3.6',
     description='A CLI tool for managing and revising coding practice questions.',

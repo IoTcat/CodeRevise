@@ -4,6 +4,7 @@ import pickle
 import os
 import json
 import appdirs
+from tabulate import tabulate
 
 class Question:
     def __init__(self, name, priority, leetcode_number=None, codepro_number=None):
@@ -16,8 +17,9 @@ class Question:
         return -self.priority < -other.priority
 
     def __repr__(self):
-        return (f"Name: {self.name}, Priority: {self.priority:.2f}, "
-                f"LeetCode#: {self.leetcode_number}, CodePro#: {self.codepro_number}")
+        headers = ["Name", "Priority", "LeetCode#", "CodePro#"]
+        rows = [[self.name, self.priority, self.leetcode_number, self.codepro_number]]
+        return tabulate(rows, headers=headers)
 
 class QuestionManager:
     def __init__(self, filepath=None):
@@ -63,8 +65,13 @@ class QuestionManager:
 
     def print_all_questions(self):
         sorted_questions = sorted(self.heap, key=lambda x: -x.priority)
+        headers = ["Name", "Priority", "LeetCode#", "CodePro#"]
+        rows = []
         for question in sorted_questions:
-            print(question)
+            row = [question.name, question.priority, question.leetcode_number, question.codepro_number]
+            rows.append(row)
+        print(tabulate(rows, headers=headers))
+
 
     def save_questions(self):
         with open(self.filepath, 'wb') as file:
