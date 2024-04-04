@@ -63,6 +63,15 @@ class QuestionManager:
         else:
             return "No questions to pop"
 
+    def delete_question(self, name):
+        question_to_delete = next((q for q in self.heap if q.name == name), None)
+        if question_to_delete:
+            self.heap.remove(question_to_delete)
+            print(f"Deleted question: {name}")
+            self.save_questions()
+        else:
+            print(f"Question not found: {name}")
+
     def print_all_questions(self):
         sorted_questions = sorted(self.heap, key=lambda x: -x.priority)
         headers = ["Name", "Priority", "LeetCode#", "CodePro#"]
@@ -71,7 +80,6 @@ class QuestionManager:
             row = [question.name, question.priority, question.leetcode_number, question.codepro_number]
             rows.append(row)
         print(tabulate(rows, headers=headers))
-
 
     def save_questions(self):
         with open(self.filepath, 'wb') as file:
@@ -151,6 +159,9 @@ def main():
     
     subparsers.add_parser('list', help='List all questions sorted by priority')
 
+    delete_parser = subparsers.add_parser('delete', help='Delete a question')
+    delete_parser.add_argument('name', type=str, help='Question name')
+
     export_parser = subparsers.add_parser('export', help='Export questions to a file')
     export_parser.add_argument('filepath', type=str, help='File path to export questions to')
 
@@ -171,6 +182,8 @@ def main():
         print(question_manager.pop(args.priority))
     elif args.command == 'list':
         question_manager.print_all_questions()
+    elif args.command == 'delete':
+        question_manager.delete_question(args.name)
     elif args.command == 'export':
         question_manager.export_questions(args.filepath)
         print(f"Questions exported successfully to {args.filepath}")
