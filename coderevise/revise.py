@@ -16,7 +16,7 @@ class Question:
         return -self.priority < -other.priority
 
     def __repr__(self):
-        return (f"Name: {self.name}, Priority: {self.priority}, "
+        return (f"Name: {self.name}, Priority: {self.priority:.2f}, "
                 f"LeetCode#: {self.leetcode_number}, CodePro#: {self.codepro_number}")
 
 class QuestionManager:
@@ -48,9 +48,14 @@ class QuestionManager:
             print(f"Added new question: {question.name}")
         self.save_questions()
 
-    def pop(self):
+    def pop(self, new_priority=None):
         if self.heap:
             question = heapq.heappop(self.heap)
+            if new_priority:
+                question.priority = new_priority
+            else:
+                question.priority *= 0.7
+            heapq.heappush(self.heap, question)
             self.save_questions()
             return question
         else:
@@ -134,7 +139,9 @@ def main():
     add_parser.add_argument('--leetcode', type=int, help='LeetCode question number', default=None)
     add_parser.add_argument('--codepro', type=int, help='CodePro question number', default=None)
 
-    subparsers.add_parser('pop', help='Remove the most unfamiliar question')
+    pop_parser = subparsers.add_parser('pop', help='Pop the most unfamiliar question and reduce its priority')
+    pop_parser.add_argument('--priority', type=int, help='Set a new priority for the popped question')
+    
     subparsers.add_parser('list', help='List all questions sorted by priority')
 
     export_parser = subparsers.add_parser('export', help='Export questions to a file')
@@ -154,7 +161,7 @@ def main():
         question_manager.push(question)
     elif args.command == 'pop':
         print("Popping the most unfamiliar question:")
-        print(question_manager.pop())
+        print(question_manager.pop(args.priority))
     elif args.command == 'list':
         question_manager.print_all_questions()
     elif args.command == 'export':
